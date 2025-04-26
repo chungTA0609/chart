@@ -15,4 +15,6 @@ public class Role {
     @Column(unique = true)
     private RoleName name;
 
+    public static class Products {
+    }
 }

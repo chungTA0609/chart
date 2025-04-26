@@ -1,4 +1,4 @@
-package com.example.chart.dto;
+package com.example.chart.dto.carts;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

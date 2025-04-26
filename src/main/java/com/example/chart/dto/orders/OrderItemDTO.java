@@ -1,4 +1,4 @@
-package com.example.chart.dto;
+package com.example.chart.dto.orders;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

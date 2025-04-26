@@ -1,4 +1,4 @@
-package com.example.chart.dto;
+package com.example.chart.dto.products;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

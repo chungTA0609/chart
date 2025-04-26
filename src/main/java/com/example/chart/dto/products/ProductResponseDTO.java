@@ -1,6 +1,7 @@
-package com.example.chart.dto;
+package com.example.chart.dto.products;
 
 
+import com.example.chart.dto.carts.CategoryResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
