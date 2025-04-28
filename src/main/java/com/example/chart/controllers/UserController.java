@@ -1,5 +1,6 @@
 package com.example.chart.controllers;
 
+import com.example.chart.core.ApiResponse;
 import com.example.chart.dto.AddressDTO;
 import com.example.chart.dto.UserDTO;
 import com.example.chart.services.UserService;
@@ -20,40 +21,44 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<UserDTO> getProfile() {
+    public ResponseEntity<ApiResponse<UserDTO>> getProfile() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(userService.getUserProfile(email));
+        UserDTO userDTO = userService.getUserProfile(email);
+        return ResponseEntity.ok(ApiResponse.success(userDTO, "Profile retrieved successfully"));
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<UserDTO> updateProfile(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<ApiResponse<UserDTO>> updateProfile(@RequestBody UserDTO userDTO) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(userService.updateUserProfile(email, userDTO));
+        UserDTO updatedUser = userService.updateUserProfile(email, userDTO);
+        return ResponseEntity.ok(ApiResponse.success(updatedUser, "Profile updated successfully"));
     }
 
     @PutMapping("/password")
-    public ResponseEntity<String> changePassword(@RequestBody String newPassword) {
+    public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody String newPassword) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         userService.changePassword(email, newPassword);
-        return ResponseEntity.ok("Password changed successfully");
+        return ResponseEntity.ok(ApiResponse.success(null, "Password changed successfully"));
     }
 
     @PostMapping("/address")
-    public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO addressDTO) {
+    public ResponseEntity<ApiResponse<AddressDTO>> addAddress(@RequestBody AddressDTO addressDTO) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(userService.addAddress(email, addressDTO));
+        AddressDTO addedAddress = userService.addAddress(email, addressDTO);
+        return ResponseEntity.ok(ApiResponse.success(addedAddress, "Address added successfully"));
     }
 
     @GetMapping("/address")
-    public ResponseEntity<List<AddressDTO>> getAddresses() {
+    public ResponseEntity<ApiResponse<List<AddressDTO>>> getAddresses() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(userService.getAddresses(email));
+        List<AddressDTO> addresses = userService.getAddresses(email);
+        return ResponseEntity.ok(ApiResponse.success(addresses, "Addresses retrieved successfully"));
     }
 
     @DeleteMapping("/address/{id}")
-    public ResponseEntity<String> deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<String>> deleteAddress(@PathVariable Long id) {
         userService.deleteAddress(id);
-        return ResponseEntity.ok("Address deleted successfully");
+        return ResponseEntity.ok(ApiResponse.success(null, "Address deleted successfully"));
     }
 }
 

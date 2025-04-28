@@ -1,6 +1,7 @@
 package com.example.chart.controllers;
 
 import com.example.chart.config.JwtTokenProvider;
+import com.example.chart.core.ApiResponse;
 import com.example.chart.dto.LoginRequest;
 import com.example.chart.dto.UserDTO;
 import com.example.chart.models.User;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<ApiResponse<UserDTO>> register(@RequestBody UserDTO userDTO) {
         User user = authService.registerUser(
                 userDTO.getEmail(),
                 userDTO.getPassword(),
@@ -38,15 +39,16 @@ public class AuthController {
         response.setEmail(user.getEmail());
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(ApiResponse.success(response, "User registered successfully"));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authService.login(loginRequest);
         List<String> roles = new ArrayList<>();
         roles.add(authentication.getAuthorities().iterator().next().getAuthority());
-        String token = jwtTokenProvider.generateToken(authentication.getAuthorities().iterator().next().getAuthority(), roles);
-        return ResponseEntity.ok(token);
+        String token = jwtTokenProvider.generateToken(loginRequest.getEmail(), roles);
+        return ResponseEntity.ok(ApiResponse.success(token, "Login successful"));
     }
 }

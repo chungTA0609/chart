@@ -2,6 +2,7 @@ package com.example.chart.services;
 
 import com.example.chart.dto.LoginRequest;
 import com.example.chart.models.Role;
+import com.example.chart.models.RoleName;
 import com.example.chart.models.User;
 import com.example.chart.repository.RoleRepository;
 import com.example.chart.repository.UserRepository;
@@ -36,7 +37,7 @@ public class AuthService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
 
-        Role customerRole = roleRepository.findByName(Role.RoleName.CUSTOMER)
+        Role customerRole = roleRepository.findByName(RoleName.CUSTOMER)
                 .orElseThrow(() -> new RuntimeException("Customer role not found"));
 
         user.setRoles(new HashSet<>() {{ add(customerRole); }});

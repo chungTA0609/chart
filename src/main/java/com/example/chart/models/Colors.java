@@ -4,17 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
+@Table(name = "colors")
 @Entity
-@Table(name = "roles")
-public class Role {
+public class Colors {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(unique = true)
-    private RoleName name;
-
-    public static class Products {
-    }
+    private String name;
+    private String value;
+    private String hex;
 }

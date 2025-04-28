@@ -3,16 +3,16 @@ package com.example.chart.config;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,11 +23,12 @@ public class JwtTokenProvider {
     private static final long EXPIRATION_TIME = 86400000; // 1 day in milliseconds
     private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 days
 
-    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     private final JwtParser jwtParser;
+    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
 
     public JwtTokenProvider() {
-        this.jwtParser = Jwts.parser().verifyWith((SecretKey) key).build();
+        this.jwtParser = Jwts.parser().verifyWith(key).build();
     }
 
     public String generateToken(String email, List<String> roles) {
@@ -36,11 +37,12 @@ public class JwtTokenProvider {
                 .claim("roles", roles) // Store roles in JWT
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(key)
+                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String extractUsername(String token) {
+        var email = jwtParser.parseSignedClaims(token);
         return jwtParser.parseSignedClaims(token).getPayload().getSubject();
     }
 
