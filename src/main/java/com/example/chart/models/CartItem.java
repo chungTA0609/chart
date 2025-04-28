@@ -18,7 +18,7 @@ public class CartItem {
     private Cart cart;
 
     @ManyToOne
-    private Product product;
+    private Products product;
 
     private Integer quantity;
 }

@@ -4,7 +4,7 @@ import com.example.chart.dto.carts.CartItemRequestDTO;
 import com.example.chart.dto.carts.WishlistItemRequestDTO;
 import com.example.chart.dto.carts.WishlistResponseDTO;
 import com.example.chart.helpers.DtoMapper;
-import com.example.chart.models.Product;
+import com.example.chart.models.Products;
 import com.example.chart.models.Wishlist;
 import com.example.chart.models.WishlistItem;
 import com.example.chart.repository.ProductRepository;
@@ -34,7 +34,7 @@ public class WishlistService {
 
     @Transactional
     public WishlistResponseDTO addItemToWishlist(Long userId, WishlistItemRequestDTO requestDTO) {
-        Product product = productRepository.findById(requestDTO.getProductId())
+        Products product = productRepository.findById(requestDTO.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         Wishlist wishlist = wishlistRepository.findByUserId(userId)

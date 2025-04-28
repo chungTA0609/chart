@@ -8,7 +8,7 @@ import com.example.chart.dto.products.ProductRequestDTO;
 import com.example.chart.dto.products.ProductResponseDTO;
 import com.example.chart.helpers.DtoMapper;
 import com.example.chart.models.Category;
-import com.example.chart.models.Product;
+import com.example.chart.models.Products;
 import com.example.chart.repository.CategoryRepository;
 import com.example.chart.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -19,7 +19,6 @@ import org.springframework.data.domain.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,20 +48,26 @@ public class ProductService {
         );
 
         Pageable sortedPageable = PageRequest.of(
-                pageable.getPageNumber(),
+                pageable.getPageNumber() - 1,
                 pageable.getPageSize(),
                 sort
         );
 
-        Page<Product> productPage = productRepository.searchAndFilter(
-                productFilterDTO.getKeyword(), productFilterDTO.getCategoryId(), productFilterDTO.getMinPrice(), productFilterDTO.getMaxPrice(), productFilterDTO.getBrand(), productFilterDTO.getMinRating(), sortedPageable
+        Page<Products> productPage = productRepository.searchAndFilter(
+                productFilterDTO.getKeyword(),
+                productFilterDTO.getCategoryId(),
+                productFilterDTO.getMinPrice(),
+                productFilterDTO.getMaxPrice(),
+                productFilterDTO.getBrand(),
+                productFilterDTO.getMinRating(),
+                sortedPageable
         );
 
         List<ProductResponseDTO> dtos = productPage.getContent().stream()
                 .map(dtoMapper::mapToProductResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
 
-        return new PageImpl<>(dtos, pageable, productPage.getTotalElements());
+        return new PageImpl<>(dtos, sortedPageable, productPage.getTotalElements());
     }
 
     private String getSortField(String sortBy) {
@@ -80,14 +85,14 @@ public class ProductService {
         List<Category> categories = requestDTO.getCategoryIds() != null ?
                 categoryRepository.findAllById(requestDTO.getCategoryIds()) :
                 List.of();
-        Product product = dtoMapper.mapToProductEntity(requestDTO, categories);
-        Product savedProduct = productRepository.save(product);
+        Products product = dtoMapper.mapToProductEntity(requestDTO, categories);
+        Products savedProduct = productRepository.save(product);
         return dtoMapper.mapToProductResponseDTO(savedProduct);
     }
 
     @Cacheable(value = "product", key = "#id")
     public ProductResponseDTO getProductById(Long id) {
-        Product product = productRepository.findById(id)
+        Products product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return dtoMapper.mapToProductResponseDTO(product);
     }
@@ -97,7 +102,7 @@ public class ProductService {
     public StockUpdateResponseDTO decreaseStock(Long productId, StockUpdateRequestDTO requestDTO) {
         int updatedRows = productRepository.decreaseStock(productId, requestDTO.getQuantity());
         if (updatedRows > 0) {
-            Product product = productRepository.findById(productId)
+            Products product = productRepository.findById(productId)
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             publishStockChangeEvent(productId, -requestDTO.getQuantity(), product.getStockQuantity(), "DECREMENT");
             return new StockUpdateResponseDTO(true, "Stock decreased successfully");
@@ -110,7 +115,7 @@ public class ProductService {
     public StockUpdateResponseDTO increaseStock(Long productId, StockUpdateRequestDTO requestDTO) {
         int updatedRows = productRepository.increaseStock(productId, requestDTO.getQuantity());
         if (updatedRows > 0) {
-            Product product = productRepository.findById(productId)
+            Products product = productRepository.findById(productId)
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             publishStockChangeEvent(productId, requestDTO.getQuantity(), product.getStockQuantity(), "INCREMENT");
             return new StockUpdateResponseDTO(true, "Stock increased successfully");
@@ -127,5 +132,15 @@ public class ProductService {
                 LocalDateTime.now().toString()
         );
         kafkaTemplate.send(STOCK_TOPIC, event);
+    }
+
+    private static <T> Page<T> listToPage(List<T> list, Pageable pageable) {
+        int total = list.size();
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), total);
+
+        List<T> content = (start > end) ? List.of() : list.subList(start, end);
+
+        return new PageImpl<>(content, pageable, total);
     }
 }

@@ -15,4 +15,6 @@ public class ProductFilterDTO {
     private Double minRating;
     private String sortBy;
     private String sortDirection;
+    private int page;
+    private int size;
 }

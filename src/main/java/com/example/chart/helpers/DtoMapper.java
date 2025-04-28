@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 public class DtoMapper {
     // Existing methods unchanged, only adding new methods
 
-    public Product mapToProductEntity(ProductRequestDTO dto, List<Category> categories) {
-        Product product = new Product();
+    public Products mapToProductEntity(ProductRequestDTO dto, List<Category> categories) {
+        Products product = new Products();
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setImages(dto.getImages());
@@ -37,7 +37,7 @@ public class DtoMapper {
         return product;
     }
 
-    public ProductVariant mapToProductVariantEntity(ProductVariantRequestDTO dto, Product product) {
+    public ProductVariant mapToProductVariantEntity(ProductVariantRequestDTO dto, Products product) {
         ProductVariant variant = new ProductVariant();
         variant.setProduct(product);
         variant.setSize(dto.getSize());
@@ -55,7 +55,7 @@ public class DtoMapper {
         return category;
     }
 
-    public CartItem mapToCartItemEntity(CartItemRequestDTO dto, Cart cart, Product product) {
+    public CartItem mapToCartItemEntity(CartItemRequestDTO dto, Cart cart, Products product) {
         CartItem item = new CartItem();
         item.setCart(cart);
         item.setProduct(product);
@@ -63,14 +63,14 @@ public class DtoMapper {
         return item;
     }
 
-    public WishlistItem mapToWishlistItemEntity(WishlistItemRequestDTO dto, Wishlist wishlist, Product product) {
+    public WishlistItem mapToWishlistItemEntity(WishlistItemRequestDTO dto, Wishlist wishlist, Products product) {
         WishlistItem item = new WishlistItem();
         item.setWishlist(wishlist);
         item.setProduct(product);
         return item;
     }
 
-    public ProductResponseDTO mapToProductResponseDTO(Product product) {
+    public ProductResponseDTO mapToProductResponseDTO(Products product) {
         ProductResponseDTO dto = new ProductResponseDTO();
         dto.setId(product.getId());
         dto.setName(product.getName());

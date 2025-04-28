@@ -5,7 +5,7 @@ import com.example.chart.dto.carts.CartResponseDTO;
 import com.example.chart.helpers.DtoMapper;
 import com.example.chart.models.Cart;
 import com.example.chart.models.CartItem;
-import com.example.chart.models.Product;
+import com.example.chart.models.Products;
 import com.example.chart.repository.CartRepository;
 import com.example.chart.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -34,7 +34,7 @@ public class CartService {
 
     @Transactional
     public CartResponseDTO addItemToCart(Long userId, CartItemRequestDTO requestDTO) {
-        Product product = productRepository.findById(requestDTO.getProductId())
+        Products product = productRepository.findById(requestDTO.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         if (product.getStockQuantity() < requestDTO.getQuantity()) {
             throw new RuntimeException("Insufficient stock");
@@ -71,7 +71,7 @@ public class CartService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        Product product = productRepository.findById(productId)
+        Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         if (product.getStockQuantity() < requestDTO.getQuantity()) {

@@ -13,7 +13,7 @@ public class ProductVariant {
     private Long id;
 
     @ManyToOne
-    private Product product;
+    private Products product;
 
     private String size;
     private String color;

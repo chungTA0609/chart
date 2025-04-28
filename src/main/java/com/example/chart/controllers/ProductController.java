@@ -6,6 +6,7 @@ import com.example.chart.dto.products.ProductResponseDTO;
 import com.example.chart.dto.orders.StockUpdateRequestDTO;
 import com.example.chart.dto.orders.StockUpdateResponseDTO;
 import com.example.chart.services.ProductService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,14 +24,15 @@ public class ProductController {
 
     private ProductService productService;
 
-    @GetMapping
+    @PostMapping("/get-list")
     public Page<ProductResponseDTO> searchProducts(
-            @RequestParam ProductFilterDTO productFilterDTO, @RequestParam int page, @RequestParam int size
+            @RequestBody ProductFilterDTO productFilterDTO
     ) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(productFilterDTO.getPage(), productFilterDTO.getSize());
         return productService.searchAndFilterProducts(productFilterDTO, pageable);
     }
 
+    @RolesAllowed({"ADMIN"})
     @PostMapping("/create")
     public ProductResponseDTO createProduct(@Valid @RequestBody ProductRequestDTO requestDTO) {
         return productService.saveProduct(requestDTO);
