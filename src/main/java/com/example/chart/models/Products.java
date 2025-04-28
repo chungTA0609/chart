@@ -31,8 +31,8 @@ public class Products {
 
     private List<String> images;
 
-    @ManyToMany
-    private List<Category> categories;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category categories;
 
     private BigDecimal price;
     private Integer stockQuantity = 0;

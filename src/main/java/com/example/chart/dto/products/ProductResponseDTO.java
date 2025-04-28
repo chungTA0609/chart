@@ -2,6 +2,7 @@ package com.example.chart.dto.products;
 
 
 import com.example.chart.dto.carts.CategoryResponseDTO;
+import com.example.chart.models.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class ProductResponseDTO {
     private String name;
     private String description;
     private List<String> images;
-    private List<CategoryResponseDTO> categories;
+    private Category categories;
     private BigDecimal price;
     private Integer stockQuantity;
     private String brand;

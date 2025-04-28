@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 public class DtoMapper {
     // Existing methods unchanged, only adding new methods
 
-    public Products mapToProductEntity(ProductRequestDTO dto, List<Category> categories) {
+    public Products mapToProductEntity(ProductRequestDTO dto, Category categories) {
         Products product = new Products();
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setImages(dto.getImages());
-        product.setCategories(categories);
+//        product.setCategories(categories);
         product.setPrice(dto.getPrice());
         product.setStockQuantity(dto.getStockQuantity());
         product.setBrand(dto.getBrand());
@@ -76,9 +76,7 @@ public class DtoMapper {
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setImages(product.getImages());
-        dto.setCategories(product.getCategories().stream()
-                .map(this::mapToCategoryResponseDTO)
-                .collect(Collectors.toList()));
+        dto.setCategories(product.getCategories());
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
         dto.setBrand(product.getBrand());

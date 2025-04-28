@@ -28,10 +28,10 @@ public interface ProductRepository extends JpaRepository<Products, Long> {
 
     @Query("SELECT p FROM Products p WHERE " +
             "(:keyword IS NULL OR p.name LIKE %:keyword% OR p.description LIKE %:keyword%) AND " +
-//            "(:categoryId IS NULL OR EXISTS (SELECT c FROM p.categories c WHERE c.id = :categoryId)) AND " +
+//            "(: categoryId IS NULL OR EXISTS (SELECT c FROM p.categories c WHERE c.id =: categoryId)) AND " +
             "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
             "(:maxPrice IS NULL OR p.price <= :maxPrice) AND " +
-//            "(:brand IS NULL OR p.brand = :brand) AND " +
+//            "(:brand IS NULL OR p.brand = :brand) AND" +
             "(:minRating IS NULL OR p.rating >= :minRating)")
     Page<Products> searchAndFilter(
             @Param("keyword") String keyword,

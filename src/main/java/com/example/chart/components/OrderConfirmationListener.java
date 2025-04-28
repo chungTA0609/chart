@@ -3,7 +3,7 @@ package com.example.chart.components;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class OrderConfirmationListener {
 
     @RabbitListener(queues = "order-confirmation-queue")

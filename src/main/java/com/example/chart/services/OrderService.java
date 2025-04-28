@@ -25,7 +25,7 @@ public class OrderService {
 
     private OrderRepository orderRepository;
 
-    private RabbitTemplate rabbitTemplate;
+//    private RabbitTemplate rabbitTemplate;
 
     @Transactional
     public Order placeOrder(Order order, String paymentMethod) {
@@ -53,7 +53,7 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         // Send order confirmation to RabbitMQ
-        rabbitTemplate.convertAndSend("order-confirmation-queue", savedOrder.getOrderNumber());
+//        rabbitTemplate.convertAndSend("order-confirmation-queue", savedOrder.getOrderNumber());
 
         return savedOrder;
     }
@@ -77,8 +77,8 @@ public class OrderService {
         Order updatedOrder = orderRepository.save(order);
 
         // Send status update notification to RabbitMQ
-        rabbitTemplate.convertAndSend("order-confirmation-queue",
-                "Order " + updatedOrder.getOrderNumber() + " updated to " + newStatus);
+//        rabbitTemplate.convertAndSend("order-confirmation-queue",
+//                "Order " + updatedOrder.getOrderNumber() + " updated to " + newStatus);
 
         return updatedOrder;
     }

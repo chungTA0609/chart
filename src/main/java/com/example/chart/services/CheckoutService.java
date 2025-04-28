@@ -27,7 +27,7 @@ public class CheckoutService {
     private PromoCodeRepository promoCodeRepository;
 
 //    @Autowired
-    private RabbitTemplate rabbitTemplate;
+//    private RabbitTemplate rabbitTemplate;
 
     public OrderSummaryDTO getOrderSummary(UUID userId, UUID cartId) {
         // Mock implementation: Fetch from cart service or database
@@ -114,7 +114,7 @@ public class CheckoutService {
         }
 
         // Send order confirmation to RabbitMQ
-        rabbitTemplate.convertAndSend("order-confirmation-queue", savedOrder.getOrderId().toString());
+//        rabbitTemplate.convertAndSend("order-confirmation-queue", savedOrder.getOrderId().toString());
 
         savedOrder.setStatus(OrderStatus.CONFIRMED);
         return orderRepository.save(savedOrder);

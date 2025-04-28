@@ -16,24 +16,14 @@ public class Dimensions {
     @NotBlank
     @Size(max = 50)
     @Column(nullable = false)
-    private String height;
+    private String key;
 
     @NotBlank
     @Size(max = 100)
     @Column(nullable = false)
-    private String width;
-
-    @NotBlank
-    @Size(max = 100)
-    @Column(nullable = false)
-    private String length;
-
-    @NotBlank
-    @Size(max = 100)
-    @Column(nullable = false)
-    private String diameter;
+    private String value;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_dimension_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Products product;
 }

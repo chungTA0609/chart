@@ -7,8 +7,7 @@ import com.example.chart.dto.products.ProductFilterDTO;
 import com.example.chart.dto.products.ProductRequestDTO;
 import com.example.chart.dto.products.ProductResponseDTO;
 import com.example.chart.helpers.DtoMapper;
-import com.example.chart.models.Category;
-import com.example.chart.models.Products;
+import com.example.chart.models.*;
 import com.example.chart.repository.CategoryRepository;
 import com.example.chart.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -20,6 +19,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private ProductRepository productRepository;
-    private KafkaTemplate<String, StockChangeEvent> kafkaTemplate;
+//    private KafkaTemplate<String, StockChangeEvent> kafkaTemplate;
     private CategoryRepository categoryRepository;
 
     private DtoMapper dtoMapper;
@@ -82,9 +83,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDTO saveProduct(ProductRequestDTO requestDTO) {
-        List<Category> categories = requestDTO.getCategoryIds() != null ?
-                categoryRepository.findAllById(requestDTO.getCategoryIds()) :
-                List.of();
+        Category categories = categoryRepository.findAllById(Collections.singleton(requestDTO.getCategoryIds())).getFirst();
         Products product = dtoMapper.mapToProductEntity(requestDTO, categories);
         Products savedProduct = productRepository.save(product);
         return dtoMapper.mapToProductResponseDTO(savedProduct);
@@ -131,7 +130,7 @@ public class ProductService {
                 eventType,
                 LocalDateTime.now().toString()
         );
-        kafkaTemplate.send(STOCK_TOPIC, event);
+//        kafkaTemplate.send(STOCK_TOPIC, event);
     }
 
     private static <T> Page<T> listToPage(List<T> list, Pageable pageable) {
@@ -142,5 +141,56 @@ public class ProductService {
         List<T> content = (start > end) ? List.of() : list.subList(start, end);
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    @Transactional
+//    @CacheEvict(value = {"product", "products"}, key = "#id")
+    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO requestDTO) {
+        Products existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        List<Category> categories = categoryRepository.findAllById(Collections.singleton(requestDTO.getCategoryIds()));
+            Products updatedProduct;
+        if (!categories.isEmpty()) {
+            updatedProduct = dtoMapper.mapToProductEntity(requestDTO, categories.getFirst());
+        } else {
+            updatedProduct = dtoMapper.mapToProductEntity(requestDTO, new Category());
+        }
+
+        // Map updated fields to existing product
+        updatedProduct.setId(existingProduct.getId());
+        updatedProduct.setCreatedDate(existingProduct.getCreatedDate());
+        updatedProduct.setPopularity(existingProduct.getPopularity());
+        updatedProduct.setVersion(existingProduct.getVersion() == null ? 0 : existingProduct.getVersion() + 1);
+        updatedProduct.setImages(existingProduct.getImages());
+        updatedProduct.setColors(requestDTO.getColors());
+        updatedProduct.setRating(requestDTO.getRating());
+        List<Specifications> specifications = new ArrayList<>();
+        for (Specifications spec : requestDTO.getSpecifications()) {
+            Specifications specEntity = new Specifications();
+            specEntity.setProduct(updatedProduct);
+            specEntity.setKey(spec.getKey());
+            specEntity.setValue(spec.getValue());
+            specifications.add(specEntity);
+        }
+        List<Dimensions> dimensions = new ArrayList<>();
+        for (Dimensions dimension : requestDTO.getDimensions()) {
+            Dimensions dimensions1 = new Dimensions();
+            dimensions1.setProduct(updatedProduct);
+            dimensions1.setKey(dimension.getKey());
+            dimensions1.setValue(dimension.getValue());
+            dimensions.add(dimension);
+        }
+        updatedProduct.setDimensions(dimensions);
+        updatedProduct.setSpecifications(specifications);
+        // Check for stock change and publish event if necessary
+        if (existingProduct.getStockQuantity() != null && !existingProduct.getStockQuantity().equals(requestDTO.getStockQuantity())) {
+            int quantityChanged = requestDTO.getStockQuantity() - existingProduct.getStockQuantity();
+            String eventType = quantityChanged > 0 ? "INCREMENT" : "DECREMENT";
+            publishStockChangeEvent(id, quantityChanged, requestDTO.getStockQuantity(), eventType);
+        }
+
+        Products savedProduct = productRepository.save(updatedProduct);
+        return dtoMapper.mapToProductResponseDTO(savedProduct);
     }
 }
