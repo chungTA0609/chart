@@ -1,48 +1,41 @@
 package com.example.chart.controllers;
 
-import com.example.chart.dto.carts.WishlistItemRequestDTO;
-import com.example.chart.dto.carts.WishlistResponseDTO;
+import com.example.chart.dto.WishlistDTO;
 import com.example.chart.services.WishlistService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/wishlists")
+@RequestMapping("/api/wishlist")
+@RequiredArgsConstructor
 public class WishlistController {
+    private final WishlistService wishlistService;
 
-    @Autowired
-    private WishlistService wishlistService;
-
-    @GetMapping("/{userId}")
-    public WishlistResponseDTO getWishlist(@PathVariable Long userId) {
-        return wishlistService.getWishlist(userId);
+    @GetMapping
+    public ResponseEntity<WishlistDTO> getWishlist(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(wishlistService.getWishlist(userId));
     }
 
-    @PostMapping("/{userId}/items")
-    public WishlistResponseDTO addItemToWishlist(
-            @PathVariable Long userId,
-            @Valid @RequestBody WishlistItemRequestDTO requestDTO
-    ) {
-        return wishlistService.addItemToWishlist(userId, requestDTO);
+    @PostMapping("/items/{productId}")
+    public ResponseEntity<WishlistDTO> addItemToWishlist(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long productId) {
+        return ResponseEntity.ok(wishlistService.addItemToWishlist(userId, productId));
     }
 
-    @DeleteMapping("/{userId}/items/{productId}")
-    public ResponseEntity<WishlistResponseDTO> removeItemFromWishlist(
-            @PathVariable Long userId,
-            @PathVariable Long productId
-    ) {
-        WishlistResponseDTO response = wishlistService.removeItemFromWishlist(userId, productId);
-        return ResponseEntity.ok(response);
+    @DeleteMapping("/items/{productId}")
+    public ResponseEntity<WishlistDTO> removeItemFromWishlist(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long productId) {
+        return ResponseEntity.ok(wishlistService.removeItemFromWishlist(userId, productId));
     }
 
-    @PostMapping("/{userId}/items/{productId}/move-to-cart")
-    public WishlistResponseDTO moveItemToCart(
-            @PathVariable Long userId,
-            @PathVariable Long productId,
-            @RequestParam(defaultValue = "1") Integer quantity
-    ) {
-        return wishlistService.moveItemToCart(userId, productId, quantity);
+    @GetMapping("/items/{productId}/check")
+    public ResponseEntity<Boolean> isProductInWishlist(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long productId) {
+        return ResponseEntity.ok(wishlistService.isProductInWishlist(userId, productId));
     }
 }

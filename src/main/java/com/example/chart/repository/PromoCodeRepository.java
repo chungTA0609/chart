@@ -2,9 +2,12 @@ package com.example.chart.repository;
 
 import com.example.chart.models.PromoCode;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
-import java.util.UUID;
+import org.springframework.stereotype.Repository;
 
-public interface PromoCodeRepository extends JpaRepository<PromoCode, UUID> {
-    Optional<PromoCode> findByCode(String code);
+import java.util.Optional;
+
+@Repository
+public interface PromoCodeRepository extends JpaRepository<PromoCode, Long> {
+    Optional<PromoCode> findByCodeAndActiveTrue(String code);
+    boolean existsByCode(String code);
 }

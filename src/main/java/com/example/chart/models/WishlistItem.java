@@ -18,5 +18,5 @@ public class WishlistItem {
     private Wishlist wishlist;
 
     @ManyToOne
-    private Products product;
+    private Product product;
 }

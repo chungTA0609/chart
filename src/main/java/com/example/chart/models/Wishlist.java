@@ -2,25 +2,29 @@ package com.example.chart.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.List;
-
-@Entity
-@Table(indexes = {
-        @Index(name = "idx_wishlist_user_id", columnList = "user_id")
-})
 @Data
+@Entity
+@Table(name = "wishlists")
 public class Wishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
-    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WishlistItem> items;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "wishlist_items",
+        joinColumns = @JoinColumn(name = "wishlist_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> products = new HashSet<>();
 
-    @Version
-    private Long version;
+    @Column(nullable = false)
+    private boolean active = true;
 }

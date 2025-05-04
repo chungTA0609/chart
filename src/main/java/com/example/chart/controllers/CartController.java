@@ -1,48 +1,50 @@
 package com.example.chart.controllers;
 
-import com.example.chart.dto.carts.CartItemRequestDTO;
-import com.example.chart.dto.carts.CartResponseDTO;
+import com.example.chart.dto.CartDTO;
+import com.example.chart.dto.CartItemDTO;
 import com.example.chart.services.CartService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/carts")
+@RequestMapping("/api/cart")
+@RequiredArgsConstructor
 public class CartController {
+    private final CartService cartService;
 
-    @Autowired
-    private CartService cartService;
-
-    @GetMapping("/{userId}")
-    public CartResponseDTO getCart(@PathVariable Long userId) {
-        return cartService.getCart(userId);
+    @GetMapping
+    public ResponseEntity<CartDTO> getCart(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(cartService.getCart(userId));
     }
 
-    @PostMapping("/{userId}/items")
-    public CartResponseDTO addItemToCart(
-            @PathVariable Long userId,
-            @Valid @RequestBody CartItemRequestDTO requestDTO
-    ) {
-        return cartService.addItemToCart(userId, requestDTO);
+    @PostMapping("/items")
+    public ResponseEntity<CartDTO> addItemToCart(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CartItemDTO cartItemDTO) {
+        return ResponseEntity.ok(cartService.addItemToCart(userId, cartItemDTO));
     }
 
-    @PatchMapping("/{userId}/items/{productId}")
-    public CartResponseDTO updateItemQuantity(
-            @PathVariable Long userId,
-            @PathVariable Long productId,
-            @Valid @RequestBody CartItemRequestDTO requestDTO
-    ) {
-        return cartService.updateItemQuantity(userId, productId, requestDTO);
+    @PutMapping("/items/{itemId}")
+    public ResponseEntity<CartDTO> updateCartItem(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long itemId,
+            @Valid @RequestBody CartItemDTO cartItemDTO) {
+        return ResponseEntity.ok(cartService.updateCartItem(userId, itemId, cartItemDTO));
     }
 
-    @DeleteMapping("/{userId}/items/{productId}")
-    public ResponseEntity<CartResponseDTO> removeItemFromCart(
-            @PathVariable Long userId,
-            @PathVariable Long productId
-    ) {
-        CartResponseDTO response = cartService.removeItemFromCart(userId, productId);
-        return ResponseEntity.ok(response);
+    @DeleteMapping("/items/{itemId}")
+    public ResponseEntity<CartDTO> removeItemFromCart(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long itemId) {
+        return ResponseEntity.ok(cartService.removeItemFromCart(userId, itemId));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> clearCart(@AuthenticationPrincipal Long userId) {
+        cartService.clearCart(userId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -28,10 +28,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserDTO>> register(@RequestBody UserDTO userDTO) {
         User user = authService.registerUser(
-                userDTO.getEmail(),
-                userDTO.getPassword(),
-                userDTO.getFirstName(),
-                userDTO.getLastName()
+                userDTO
         );
 
         UserDTO response = new UserDTO();

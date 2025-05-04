@@ -1,75 +1,66 @@
 package com.example.chart.controllers;
 
-import com.example.chart.dto.products.ProductFilterDTO;
-import com.example.chart.dto.products.ProductRequestDTO;
-import com.example.chart.dto.products.ProductResponseDTO;
-import com.example.chart.dto.orders.StockUpdateRequestDTO;
-import com.example.chart.dto.orders.StockUpdateResponseDTO;
+import com.example.chart.dto.ProductDTO;
+import com.example.chart.dto.ProductSearchDTO;
 import com.example.chart.services.ProductService;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/products")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProductController {
+    private final ProductService productService;
 
-    private ProductService productService;
-
-    @PostMapping("/get-list")
-    public Page<ProductResponseDTO> searchProducts(
-            @RequestBody ProductFilterDTO productFilterDTO
-    ) {
-        Pageable pageable = PageRequest.of(productFilterDTO.getPage(), productFilterDTO.getSize());
-        return productService.searchAndFilterProducts(productFilterDTO, pageable);
-    }
-
-    @RolesAllowed({"ADMIN"})
-    @PostMapping("/create")
-    public ProductResponseDTO createProduct(@Valid @RequestBody ProductRequestDTO requestDTO) {
-        return productService.saveProduct(requestDTO);
-    }
-
-    @GetMapping("/{id}")
-    public ProductResponseDTO getProduct(@PathVariable Long id) {
-        return productService.getProductById(id);
-    }
-
-    @PatchMapping("/{id}/stock/decrease")
-    public ResponseEntity<StockUpdateResponseDTO> decreaseStock(
-            @PathVariable Long id,
-            @Valid @RequestBody StockUpdateRequestDTO requestDTO
-    ) {
-        StockUpdateResponseDTO response = productService.decreaseStock(id, requestDTO);
-        return response.isSuccess() ?
-                ResponseEntity.ok(response) :
-                ResponseEntity.badRequest().body(response);
-    }
-
-    @PatchMapping("/{id}/stock/increase")
-    public ResponseEntity<StockUpdateResponseDTO> increaseStock(
-            @PathVariable Long id,
-            @Valid @RequestBody StockUpdateRequestDTO requestDTO
-    ) {
-        StockUpdateResponseDTO response = productService.increaseStock(id, requestDTO);
-        return response.isSuccess() ?
-                ResponseEntity.ok(response) :
-                ResponseEntity.badRequest().body(response);
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(productService.createProduct(productDTO));
     }
 
     @PutMapping("/{id}")
-    public ProductResponseDTO updateProduct(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductRequestDTO requestDTO
-    ) {
-        return productService.updateProduct(id, requestDTO);
+            @Valid @RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    @PostMapping("/get-list")
+    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestBody ProductSearchDTO searchDTO) {
+        return ResponseEntity.ok(productService.getAllProducts(
+            searchDTO.getKeyword(),
+            searchDTO.getSortBy(),
+            searchDTO.getSortDirection(),
+            searchDTO.getPage(),
+            searchDTO.getSize()
+        ));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductDTO>> searchProducts(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            Pageable pageable) {
+        return ResponseEntity.ok(productService.searchProducts(categoryId, brand, minPrice, maxPrice, pageable));
     }
 }

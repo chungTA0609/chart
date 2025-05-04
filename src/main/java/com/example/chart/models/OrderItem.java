@@ -1,20 +1,34 @@
 package com.example.chart.models;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Embeddable
+@Entity
+@Table(name = "order_items")
 public class OrderItem {
-    private String sku;
-    private Integer quantity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    @Column(nullable = false)
+    private int quantity;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
+    @Column(nullable = false)
+    private BigDecimal subtotal;
+
+    @Column(nullable = false)
+    private boolean active = true;
 }

@@ -1,54 +1,75 @@
 package com.example.chart.controllers;
 
-import com.example.chart.models.Order;
+import com.example.chart.dto.OrderDTO;
 import com.example.chart.models.OrderStatus;
 import com.example.chart.services.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/orders")
+@RequiredArgsConstructor
 public class OrderController {
+    private final OrderService orderService;
 
-    @Autowired
-    private OrderService orderService;
-
-    @PostMapping("/orders")
-    public ResponseEntity<Order> placeOrder(
-            @RequestBody Order order,
-            @RequestParam String paymentMethod) {
-        return ResponseEntity.ok(orderService.placeOrder(order, paymentMethod));
+    @PostMapping
+    public ResponseEntity<OrderDTO> createOrder(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody OrderDTO orderDTO) {
+        return ResponseEntity.ok(orderService.createOrder(userId, orderDTO));
     }
 
-    @GetMapping("/orders/{orderId}")
-    public ResponseEntity<Order> getOrderDetails(@PathVariable UUID orderId) {
-        return ResponseEntity.ok(orderService.getOrderDetails(orderId));
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
-    @PatchMapping("/orders/{orderId}/status")
-    public ResponseEntity<Order> updateOrderStatus(
-            @PathVariable UUID orderId,
-            @RequestParam OrderStatus status,
-            @RequestParam(required = false) String trackingNumber) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(orderId, status, trackingNumber));
+    @GetMapping("/user")
+    public ResponseEntity<Page<OrderDTO>> getUserOrders(
+            @AuthenticationPrincipal Long userId,
+            Pageable pageable) {
+        return ResponseEntity.ok(orderService.getUserOrders(userId, pageable));
     }
 
-    @GetMapping("/orders/history")
-    public ResponseEntity<Page<Order>> getOrderHistory(
-            @RequestParam UUID userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection) {
-        return ResponseEntity.ok(orderService.getOrderHistory(userId, page, size, status, dateFrom, dateTo, sortBy, sortDirection));
+    @PutMapping("/{id}/status")
+    public ResponseEntity<OrderDTO> updateOrderStatus(
+            @PathVariable Long id,
+            @RequestParam OrderStatus status) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
+    }
+
+    @PutMapping("/{id}/tracking")
+    public ResponseEntity<OrderDTO> updateTrackingNumber(
+            @PathVariable Long id,
+            @RequestParam String trackingNumber) {
+        return ResponseEntity.ok(orderService.updateTrackingNumber(id, trackingNumber));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> cancelOrder(@PathVariable Long id) {
+        orderService.cancelOrder(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<Page<OrderDTO>> getOrdersByStatus(
+            @PathVariable OrderStatus status,
+            Pageable pageable) {
+        return ResponseEntity.ok(orderService.getOrdersByStatus(status, pageable));
+    }
+
+    @GetMapping("/date-range")
+    public ResponseEntity<Page<OrderDTO>> getOrdersByDateRange(
+            @RequestParam LocalDateTime startDate,
+            @RequestParam LocalDateTime endDate,
+            Pageable pageable) {
+        return ResponseEntity.ok(orderService.getOrdersByDateRange(startDate, endDate, pageable));
     }
 }

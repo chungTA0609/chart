@@ -1,5 +1,10 @@
 package com.example.chart.models;
 
 public enum OrderStatus {
-    PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED, PAID, COMPLETED
+    PENDING,
+    PROCESSING,
+    SHIPPED,
+    DELIVERED,
+    CANCELLED,
+    REFUNDED
 }

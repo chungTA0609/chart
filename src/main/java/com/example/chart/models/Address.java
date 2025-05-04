@@ -11,13 +11,25 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String street;
+
+    @Column(nullable = false)
     private String city;
+
+    @Column(nullable = false)
     private String state;
-    private String country;
+
+    @Column(name = "zip_code", nullable = false)
     private String zipCode;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @Column(nullable = false)
+    private String country;
+
+    @Column(name = "is_default", nullable = false)
+    private boolean isDefault = false;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

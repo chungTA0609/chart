@@ -1,6 +1,7 @@
 package com.example.chart.services;
 
 import com.example.chart.dto.LoginRequest;
+import com.example.chart.dto.UserDTO;
 import com.example.chart.models.Role;
 import com.example.chart.models.RoleName;
 import com.example.chart.models.User;
@@ -26,18 +27,18 @@ public class AuthService {
     @Autowired
     private final AuthenticationManager authenticationManager;
 
-    public User registerUser(String email, String password, String firstName, String lastName) {
-        if (userRepository.existsByEmail(email)) {
+    public User registerUser(UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
 
         User user = new User();
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
 
-        Role customerRole = roleRepository.findByName(RoleName.CUSTOMER)
+        Role customerRole = roleRepository.findByName(RoleName.ADMIN)
                 .orElseThrow(() -> new RuntimeException("Customer role not found"));
 
         user.setRoles(new HashSet<>() {{ add(customerRole); }});
