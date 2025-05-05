@@ -3,7 +3,7 @@ package com.example.chart.dto;
 import lombok.Data;
 
 @Data
-public class AddressDTO {
+public class AddressResponseDTO {
     private Long id;
     private String street;
     private String city;
@@ -11,6 +11,8 @@ public class AddressDTO {
     private String zipCode;
     private String country;
     private String phoneNumber;
+    private String email;
     private Long userId;
     private boolean isDefault;
+    private String fullName;
 }

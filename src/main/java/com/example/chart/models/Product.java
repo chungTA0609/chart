@@ -12,6 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "products")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +33,8 @@ public class Product {
     private String mainImage;
 
     @JsonManagedReference("product-images")
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
     private Set<ProductImage> images = new HashSet<>();
 
     @JsonIgnore
@@ -47,7 +49,8 @@ public class Product {
     private int reviewCount = 0;
 
     @JsonManagedReference("product-colors")
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
     private Set<Color> colors = new HashSet<>();
 
     @ElementCollection
@@ -56,11 +59,13 @@ public class Product {
     private Set<String> sizes = new HashSet<>();
 
     @JsonManagedReference("product-specifications")
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
     private Set<ProductSpecification> specifications = new HashSet<>();
 
     @JsonManagedReference("product-dimensions")
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
     private Set<ProductDimension> dimensions = new HashSet<>();
 
     @Column(nullable = false)
@@ -75,32 +80,4 @@ public class Product {
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductVariant> variants = new HashSet<>();
-
-    public void addImage(ProductImage image) {
-        if (image != null) {
-            images.add(image);
-            image.setProduct(this);
-        }
-    }
-
-    public void addColor(Color color) {
-        if (color != null) {
-            colors.add(color);
-            color.setProduct(this);
-        }
-    }
-
-    public void addSpecification(ProductSpecification spec) {
-        if (spec != null) {
-            specifications.add(spec);
-            spec.setProduct(this);
-        }
-    }
-
-    public void addDimension(ProductDimension dim) {
-        if (dim != null) {
-            dimensions.add(dim);
-            dim.setProduct(this);
-        }
-    }
-} 
+}

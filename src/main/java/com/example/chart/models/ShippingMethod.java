@@ -1,24 +1,28 @@
 package com.example.chart.models;
 
-public enum ShippingMethod {
-    STANDARD("Standard Shipping", 5.00),
-    EXPRESS("Express Shipping", 10.00),
-    NEXT_DAY("Next Day Delivery", 15.00),
-    PICKUP("Store Pickup", 0.00);
+import jakarta.persistence.*;
+import lombok.Data;
 
-    private final String displayName;
-    private final double cost;
+@Data
+@Entity
+@Table(name = "shipping_methods")
+public class ShippingMethod {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    ShippingMethod(String displayName, double cost) {
-        this.displayName = displayName;
-        this.cost = cost;
-    }
+    @Column(nullable = false)
+    private String name;
 
-    public String getDisplayName() {
-        return displayName;
-    }
+    @Column(nullable = false)
+    private String description;
 
-    public double getCost() {
-        return cost;
-    }
+    @Column(nullable = false)
+    private Double price;
+
+    @Column(nullable = false)
+    private Integer estimatedDays;
+
+    @Column(nullable = false)
+    private boolean isActive = true;
 } 

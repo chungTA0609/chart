@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         Address address = new Address();
-        address.setUser(user);
+        address.setUserId(user.getId());
         address.setStreet(addressDTO.getStreet());
         address.setCity(addressDTO.getCity());
         address.setState(addressDTO.getState());
@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        return addressRepository.findByUser(user).stream()
+        return addressRepository.findByUserId(user.getId()).stream()
                 .map(this::mapToAddressDTO)
                 .collect(Collectors.toList());
     }
@@ -170,7 +170,6 @@ public class UserServiceImpl implements UserService {
 
     private AddressDTO mapToAddressDTO(Address address) {
         AddressDTO dto = new AddressDTO();
-        dto.setId(address.getId());
         dto.setStreet(address.getStreet());
         dto.setCity(address.getCity());
         dto.setState(address.getState());

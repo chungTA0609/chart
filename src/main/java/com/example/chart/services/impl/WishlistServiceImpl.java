@@ -111,7 +111,7 @@ public class WishlistServiceImpl implements WishlistService {
                     imageDTO.setMain(image.isMain());
                     return imageDTO;
                 })
-                .collect(Collectors.toSet()));
+                .collect(Collectors.toList()));
 
         return dto;
     }

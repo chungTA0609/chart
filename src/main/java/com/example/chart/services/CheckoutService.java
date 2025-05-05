@@ -22,7 +22,7 @@ public interface CheckoutService {
 
     CheckoutDTO initializeCheckout(Long userId);
     CheckoutDTO applyPromoCode(Long userId, String promoCode);
-    CheckoutDTO updateShippingAddress(Long userId, String shippingAddress, String billingAddress);
+    CheckoutDTO updateShippingAddress(Long userId, Long shippingAddressId, Long billingAddressId);
     CheckoutDTO updateShippingMethod(Long userId, ShippingMethod shippingMethod);
     CheckoutDTO removePromoCode(Long userId);
     CheckoutDTO calculateTotals(Long userId);

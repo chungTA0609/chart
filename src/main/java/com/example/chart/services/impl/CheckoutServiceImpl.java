@@ -25,6 +25,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final PromoCodeRepository promoCodeRepository;
+    private final ShippingMethodRepository shippingMethodRepository;
 
     private OrderDTO convertCartToOrder(CartDTO cartDTO) {
         OrderDTO orderDTO = new OrderDTO();
@@ -57,24 +58,47 @@ public class CheckoutServiceImpl implements CheckoutService {
         checkoutDTO.setItems(orderDTO.getItems());
         
         // Calculate initial totals
-        return calculateTotals(userId);
+        return calculateTotals(checkoutDTO);
     }
 
     @Override
     @Transactional
-    public CheckoutDTO updateShippingAddress(Long userId, String shippingAddress, String billingAddress) {
+    public CheckoutDTO updateShippingAddress(Long userId, Long shippingAddressId, Long billingAddressId) {
         CheckoutDTO checkoutDTO = initializeCheckout(userId);
-        checkoutDTO.setShippingAddress(shippingAddress);
-        checkoutDTO.setBillingAddress(billingAddress);
-        return calculateTotals(userId);
+        
+        // Get shipping address
+        Address shippingAddress = addressRepository.findById(shippingAddressId)
+                .orElseThrow(() -> new EntityNotFoundException("Shipping address not found"));
+        
+        // Get billing address
+//        Address billingAddress = addressRepository.findById(billingAddressId)
+//                .orElseThrow(() -> new EntityNotFoundException("Billing address not found"));
+        
+        // Format addresses
+        String formattedShippingAddress = formatAddress(shippingAddress);
+//        String formattedBillingAddress = formatAddress(billingAddress);
+        
+        checkoutDTO.setSelectedAddressId(shippingAddressId);
+//        checkoutDTO.setBillingAddress(formattedBillingAddress);
+        return calculateTotals(checkoutDTO);
+    }
+
+    private String formatAddress(Address address) {
+        return String.format("%s, %s, %s, %s, %s, Phone: %s",
+                address.getStreet(),
+                address.getCity(),
+                address.getState(),
+                address.getZipCode(),
+                address.getCountry(),
+                address.getPhoneNumber());
     }
 
     @Override
     @Transactional
     public CheckoutDTO updateShippingMethod(Long userId, ShippingMethod shippingMethod) {
         CheckoutDTO checkoutDTO = initializeCheckout(userId);
-        checkoutDTO.setShippingMethod(shippingMethod.name());
-        return calculateTotals(userId);
+        checkoutDTO.setShippingMethodId(shippingMethod.getId());
+        return calculateTotals(checkoutDTO);
     }
 
     @Override
@@ -86,7 +110,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                 .orElseThrow(() -> new EntityNotFoundException("Invalid promo code"));
 
         checkoutDTO.setPromoCode(promoCode);
-        return calculateTotals(userId);
+        return calculateTotals(checkoutDTO);
     }
 
     @Override
@@ -94,14 +118,16 @@ public class CheckoutServiceImpl implements CheckoutService {
     public CheckoutDTO removePromoCode(Long userId) {
         CheckoutDTO checkoutDTO = initializeCheckout(userId);
         checkoutDTO.setPromoCode(null);
-        return calculateTotals(userId);
+        return calculateTotals(checkoutDTO);
     }
 
     @Override
     @Transactional
     public CheckoutDTO calculateTotals(Long userId) {
-        CheckoutDTO checkoutDTO = initializeCheckout(userId);
-        
+        return calculateTotals(initializeCheckout(userId));
+    }
+
+    private CheckoutDTO calculateTotals(CheckoutDTO checkoutDTO) {
         // Calculate subtotal
         BigDecimal subtotal = checkoutDTO.getItems().stream()
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
@@ -110,10 +136,11 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // Calculate shipping cost
         BigDecimal shippingCost = BigDecimal.ZERO;
-        if (checkoutDTO.getShippingMethod() != null) {
-            shippingCost = BigDecimal.valueOf(ShippingMethod.valueOf(checkoutDTO.getShippingMethod()).getCost());
+        if (checkoutDTO.getShippingMethodId() != null) {
+            ShippingMethod shippingMethod = shippingMethodRepository.getReferenceById(checkoutDTO.getShippingMethodId());
+            shippingCost = BigDecimal.valueOf(shippingMethod.getPrice());
         }
-        checkoutDTO.setShippingCost(shippingCost);
+//        checkoutDTO.setShippingCost(shippingCost);
 
         // Calculate discount
         BigDecimal discount = BigDecimal.ZERO;
@@ -144,8 +171,8 @@ public class CheckoutServiceImpl implements CheckoutService {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setUserId(userId);
         orderDTO.setItems(checkoutDTO.getItems());
-        orderDTO.setShippingAddress(checkoutDTO.getShippingAddress());
-        orderDTO.setBillingAddress(checkoutDTO.getBillingAddress());
+//        orderDTO.setShippingAddress(checkoutDTO.getShippingAddress());
+//        orderDTO.setBillingAddress(checkoutDTO.getBillingAddress());
         orderDTO.setPaymentMethod(paymentMethod);
         orderDTO.setTotalAmount(checkoutDTO.getTotalAmount());
 
@@ -160,19 +187,19 @@ public class CheckoutServiceImpl implements CheckoutService {
         CheckoutDTO checkoutDTO = calculateTotals(userId);
         
         // Validate shipping address
-        if (checkoutDTO.getShippingAddress() == null || checkoutDTO.getShippingAddress().isEmpty()) {
-            return false;
-        }
+//        if (checkoutDTO.getShippingAddress() == null || checkoutDTO.getShippingAddress().isEmpty()) {
+//            return false;
+//        }
 
         // Validate shipping method
-        if (checkoutDTO.getShippingMethod() == null || checkoutDTO.getShippingMethod().isEmpty()) {
-            return false;
-        }
+//        if (checkoutDTO.getShippingMethod() == null || checkoutDTO.getShippingMethod().isEmpty()) {
+//            return false;
+//        }
 
         // Validate payment method
-        if (checkoutDTO.getPaymentMethod() == null || checkoutDTO.getPaymentMethod().isEmpty()) {
-            return false;
-        }
+//        if (checkoutDTO.getPaymentMethod() == null || checkoutDTO.getPaymentMethod().isEmpty()) {
+//            return false;
+//        }
 
         // Validate items
         if (checkoutDTO.getItems() == null || checkoutDTO.getItems().isEmpty()) {

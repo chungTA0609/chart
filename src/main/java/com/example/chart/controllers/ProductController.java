@@ -1,5 +1,6 @@
 package com.example.chart.controllers;
 
+import com.example.chart.core.ApiResponse;
 import com.example.chart.dto.ProductDTO;
 import com.example.chart.dto.ProductSearchDTO;
 import com.example.chart.services.ProductService;
@@ -19,48 +20,55 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
-        return ResponseEntity.ok(productService.createProduct(productDTO));
+    public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@Valid @RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(ApiResponse.success(productService.saveProduct(productDTO), "Product created successfully"));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductDTO> updateProduct(
+    public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody ProductDTO productDTO) {
-        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
+        productDTO.setId(id);
+        return ResponseEntity.ok(ApiResponse.success(productService.saveProduct(productDTO), "Product updated successfully"));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "Product deleted successfully"));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    public ResponseEntity<ApiResponse<ProductDTO>> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(productService.getProductById(id), "Product retrieved successfully"));
     }
 
     @PostMapping("/get-list")
-    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestBody ProductSearchDTO searchDTO) {
-        return ResponseEntity.ok(productService.getAllProducts(
-            searchDTO.getKeyword(),
-            searchDTO.getSortBy(),
-            searchDTO.getSortDirection(),
-            searchDTO.getPage(),
-            searchDTO.getSize()
+    public ResponseEntity<ApiResponse<Page<ProductDTO>>> getAllProducts(@RequestBody ProductSearchDTO searchDTO) {
+        return ResponseEntity.ok(ApiResponse.success(
+            productService.getAllProducts(
+                searchDTO.getKeyword(),
+                searchDTO.getSortBy(),
+                searchDTO.getSortDirection(),
+                searchDTO.getPage(),
+                searchDTO.getSize()
+            ),
+            "Products retrieved successfully"
         ));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<ProductDTO>> searchProducts(
+    public ResponseEntity<ApiResponse<Page<ProductDTO>>> searchProducts(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             Pageable pageable) {
-        return ResponseEntity.ok(productService.searchProducts(categoryId, brand, minPrice, maxPrice, pageable));
+        return ResponseEntity.ok(ApiResponse.success(
+            productService.searchProducts(categoryId, brand, minPrice, maxPrice, pageable),
+            "Products retrieved successfully"
+        ));
     }
 }

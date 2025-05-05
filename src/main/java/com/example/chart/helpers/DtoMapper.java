@@ -1,18 +1,6 @@
 package com.example.chart.helpers;
 
-import com.example.chart.dto.carts.*;
-import com.example.chart.dto.orders.OrderItemDTO;
-import com.example.chart.dto.orders.OrderSummaryDTO;
-import com.example.chart.dto.products.ProductRequestDTO;
-import com.example.chart.dto.products.ProductResponseDTO;
-import com.example.chart.dto.products.ProductVariantRequestDTO;
-import com.example.chart.dto.products.ProductVariantResponseDTO;
-import com.example.chart.models.*;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class DtoMapper {

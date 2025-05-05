@@ -26,10 +26,12 @@ public class Address {
     @Column(nullable = false)
     private String country;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @Column(name = "is_default", nullable = false)
     private boolean isDefault = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 }
