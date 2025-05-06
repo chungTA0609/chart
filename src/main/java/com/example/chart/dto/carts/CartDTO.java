@@ -1,5 +1,6 @@
-package com.example.chart.dto;
+package com.example.chart.dto.carts;
 
+import com.example.chart.dto.orders.CartItemDTO;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Set;

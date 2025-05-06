@@ -1,6 +1,10 @@
 package com.example.chart.services.impl;
 
 import com.example.chart.dto.*;
+import com.example.chart.dto.products.ProductDTO;
+import com.example.chart.dto.products.ProductDimensionDTO;
+import com.example.chart.dto.products.ProductImageDTO;
+import com.example.chart.dto.products.ProductSpecificationDTO;
 import com.example.chart.models.*;
 import com.example.chart.repository.*;
 import com.example.chart.services.ProductService;
@@ -8,13 +12,11 @@ import com.example.chart.services.ColorService;
 import com.example.chart.services.ProductSpecificationService;
 import com.example.chart.services.ProductDimensionService;
 import com.example.chart.services.ProductImageService;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

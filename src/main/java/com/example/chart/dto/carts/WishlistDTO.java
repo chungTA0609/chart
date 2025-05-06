@@ -1,5 +1,6 @@
-package com.example.chart.dto;
+package com.example.chart.dto.carts;
 
+import com.example.chart.dto.products.ProductDTO;
 import lombok.Data;
 import java.util.Set;
 

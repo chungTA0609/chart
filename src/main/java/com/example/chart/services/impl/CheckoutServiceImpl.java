@@ -1,6 +1,6 @@
 package com.example.chart.services.impl;
 
-import com.example.chart.dto.CartDTO;
+import com.example.chart.dto.carts.CartDTO;
 import com.example.chart.dto.CheckoutDTO;
 import com.example.chart.dto.OrderDTO;
 import com.example.chart.dto.OrderItemDTO;

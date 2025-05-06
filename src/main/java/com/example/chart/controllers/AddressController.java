@@ -1,10 +1,8 @@
 package com.example.chart.controllers;
 
 import com.example.chart.core.ApiResponse;
-import com.example.chart.dto.AddressDTO;
-import com.example.chart.dto.AddressResponseDTO;
-import com.example.chart.models.Address;
-import com.example.chart.models.User;
+import com.example.chart.dto.address.AddressDTO;
+import com.example.chart.dto.address.AddressResponseDTO;
 import com.example.chart.repository.UserRepository;
 import com.example.chart.services.AddressService;
 import jakarta.persistence.EntityNotFoundException;

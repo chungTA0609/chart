@@ -1,6 +1,6 @@
 package com.example.chart.services.impl;
 
-import com.example.chart.dto.AddressDTO;
+import com.example.chart.dto.address.AddressDTO;
 import com.example.chart.dto.UserDTO;
 import com.example.chart.models.Address;
 import com.example.chart.models.User;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

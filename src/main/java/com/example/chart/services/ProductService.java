@@ -1,6 +1,6 @@
 package com.example.chart.services;
 
-import com.example.chart.dto.ProductDTO;
+import com.example.chart.dto.products.ProductDTO;
 import org.springframework.data.domain.*;
 
 public interface ProductService {

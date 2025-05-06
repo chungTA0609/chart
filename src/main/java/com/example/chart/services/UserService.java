@@ -1,19 +1,10 @@
 package com.example.chart.services;
 
-import com.example.chart.dto.AddressDTO;
+import com.example.chart.dto.address.AddressDTO;
 import com.example.chart.dto.UserDTO;
-import com.example.chart.exception.ResourceNotFoundException;
-import com.example.chart.models.Address;
-import com.example.chart.models.User;
-import com.example.chart.repository.AddressRepository;
-import com.example.chart.repository.UserRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public interface UserService {
 

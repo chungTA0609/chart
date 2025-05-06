@@ -1,7 +1,7 @@
 package com.example.chart.services;
 
-import com.example.chart.dto.CartDTO;
-import com.example.chart.dto.CartItemDTO;
+import com.example.chart.dto.carts.CartDTO;
+import com.example.chart.dto.orders.CartItemDTO;
 
 public interface CartService {
 

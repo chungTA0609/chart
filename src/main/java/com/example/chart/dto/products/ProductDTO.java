@@ -1,5 +1,6 @@
-package com.example.chart.dto;
+package com.example.chart.dto.products;
 
+import com.example.chart.dto.ColorDTO;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.math.BigDecimal;

@@ -1,8 +1,8 @@
 package com.example.chart.controllers;
 
 import com.example.chart.core.ApiResponse;
-import com.example.chart.dto.ProductDTO;
-import com.example.chart.dto.ProductSearchDTO;
+import com.example.chart.dto.products.ProductDTO;
+import com.example.chart.dto.products.ProductSearchDTO;
 import com.example.chart.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

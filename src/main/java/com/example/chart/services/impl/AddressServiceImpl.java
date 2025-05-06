@@ -1,7 +1,7 @@
 package com.example.chart.services.impl;
 
-import com.example.chart.dto.AddressDTO;
-import com.example.chart.dto.AddressResponseDTO;
+import com.example.chart.dto.address.AddressDTO;
+import com.example.chart.dto.address.AddressResponseDTO;
 import com.example.chart.models.Address;
 import com.example.chart.models.User;
 import com.example.chart.repository.AddressRepository;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

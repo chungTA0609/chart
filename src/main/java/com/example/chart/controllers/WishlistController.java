@@ -1,6 +1,6 @@
 package com.example.chart.controllers;
 
-import com.example.chart.dto.WishlistDTO;
+import com.example.chart.dto.carts.WishlistDTO;
 import com.example.chart.services.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

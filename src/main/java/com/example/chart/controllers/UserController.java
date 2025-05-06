@@ -1,12 +1,11 @@
 package com.example.chart.controllers;
 
 import com.example.chart.core.ApiResponse;
-import com.example.chart.dto.AddressDTO;
+import com.example.chart.dto.address.AddressDTO;
 import com.example.chart.dto.UserDTO;
 import com.example.chart.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,7 +1,7 @@
 package com.example.chart.controllers;
 
-import com.example.chart.dto.CartDTO;
-import com.example.chart.dto.CartItemDTO;
+import com.example.chart.dto.carts.CartDTO;
+import com.example.chart.dto.orders.CartItemDTO;
 import com.example.chart.services.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

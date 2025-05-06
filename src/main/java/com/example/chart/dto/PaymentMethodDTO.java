@@ -8,4 +8,4 @@ public class PaymentMethodDTO {
     private String name;
     private String description;
     private boolean isActive;
-} 
+}

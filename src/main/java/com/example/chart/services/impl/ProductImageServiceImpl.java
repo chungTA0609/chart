@@ -1,6 +1,6 @@
 package com.example.chart.services.impl;
 
-import com.example.chart.dto.ProductImageDTO;
+import com.example.chart.dto.products.ProductImageDTO;
 import com.example.chart.models.ProductImage;
 import com.example.chart.repository.ProductImageRepository;
 import com.example.chart.services.ProductImageService;

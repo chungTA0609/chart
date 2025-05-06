@@ -1,7 +1,7 @@
 package com.example.chart.services;
 
-import com.example.chart.dto.AddressDTO;
-import com.example.chart.dto.AddressResponseDTO;
+import com.example.chart.dto.address.AddressDTO;
+import com.example.chart.dto.address.AddressResponseDTO;
 
 import java.util.List;
 

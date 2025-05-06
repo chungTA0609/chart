@@ -1,4 +1,4 @@
-package com.example.chart.dto;
+package com.example.chart.dto.orders;
 
 import lombok.Data;
 import java.math.BigDecimal;

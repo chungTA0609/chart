@@ -1,6 +1,6 @@
 package com.example.chart.services;
 
-import com.example.chart.dto.ProductSpecificationDTO;
+import com.example.chart.dto.products.ProductSpecificationDTO;
 import java.util.List;
 
 public interface ProductSpecificationService {

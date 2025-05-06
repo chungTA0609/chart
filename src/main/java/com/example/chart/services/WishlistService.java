@@ -1,18 +1,6 @@
 package com.example.chart.services;
 
-import com.example.chart.dto.carts.CartItemRequestDTO;
-import com.example.chart.dto.carts.WishlistItemRequestDTO;
-import com.example.chart.dto.carts.WishlistResponseDTO;
-import com.example.chart.dto.WishlistDTO;
-import com.example.chart.helpers.DtoMapper;
-import com.example.chart.models.Wishlist;
-import com.example.chart.models.WishlistItem;
-import com.example.chart.repository.ProductRepository;
-import com.example.chart.repository.WishlistRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import com.example.chart.dto.carts.WishlistDTO;
 
 public interface WishlistService {
 
