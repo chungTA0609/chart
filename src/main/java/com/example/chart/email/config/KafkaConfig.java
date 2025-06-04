@@ -20,8 +20,8 @@ import org.springframework.retry.annotation.Retryable;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
-@EnableRetry
+//@Configuration
+//@EnableRetry
 public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")

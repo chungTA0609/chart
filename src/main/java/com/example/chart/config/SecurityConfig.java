@@ -83,7 +83,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // No trailing slash
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://goblin-well-promptly.ngrok-free.app")); // No trailing slash
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // Allow all headers for simplicity
         configuration.setExposedHeaders(List.of("Authorization")); // If needed
