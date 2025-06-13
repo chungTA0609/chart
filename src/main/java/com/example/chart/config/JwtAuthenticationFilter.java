@@ -42,23 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
-        System.out.println(request.getRemoteAddr() + " " + request.getRemoteHost() + " " + request.getRemotePort());
-        String xfHeader = request.getHeader("X-Forwarded-For");
-        if (xfHeader != null && !xfHeader.isEmpty()) {
-            // In case there are multiple IPs, take the first one
-            System.out.println(xfHeader.split(",")[0].trim() + " "+ "ippp");
-        }
-        for (String header: IP_HEADER_CANDIDATES) {
-            String ipList = request.getHeader(header);
-
-            if (ipList != null && ipList.length() != 0 && !"unknown".equalsIgnoreCase(ipList)) {
-                String ip = ipList.split(",")[0];
-                System.out.println(header +": " + ip);
-            }
-            else {
-                System.out.println(header +": " + "unknown");
-            }
-        }
 
         if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
             String email = jwtTokenProvider.extractUsername(jwt);

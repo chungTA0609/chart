@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="email/base :: head">
+    <title>Shipping Update</title>
+</head>
+<body>
+    <div th:replace="email/base :: container">
+        <div class="content">
+            <h2>Your Order Has Been Shipped!</h2>
+            <p>Hello <span th:text="${customerName}">User</span>,</p>
+            
+            <p>Great news! Your order is on its way to you.</p>
+            
+            <div style="background-color: #f9f9f9; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <p><strong>Order Number:</strong> <span th:text="${orderNumber}">#12345</span></p>
+                <p><strong>Tracking Number:</strong> <span th:text="${trackingNumber}">TRK123456789</span></p>
+                <p><strong>Status:</strong> <span th:text="${status}">Shipped</span></p>
+            </div>
+            
+            <p>You can track your package using the tracking number above.</p>
+            
+            <p>If you have any questions about your shipment, please contact our customer service.</p>
+            
+            <p>Best regards,<br>
+            The Chart Team</p>
+        </div>
+    </div>
+</body>
+</html> 

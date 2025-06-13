@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="email/base :: head">
+    <title>Order Confirmation</title>
+</head>
+<body>
+    <div th:replace="email/base :: container">
+        <div class="content">
+            <h2>Thank You for Your Order!</h2>
+            <p>Hello <span th:text="${customerName}">User</span>,</p>
+            
+            <p>Your order has been confirmed and is being processed. Here's a summary of your order:</p>
+            
+            <div style="background-color: #f9f9f9; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <p><strong>Order Number:</strong> <span th:text="${orderNumber}">#12345</span></p>
+                <div th:utext="${orderDetails}">
+                    <p>1x Product Name - $XX.XX</p>
+                    <p>2x Other Product - $XX.XX</p>
+                    <hr>
+                    <p><strong>Total:</strong> $XX.XX</p>
+                </div>
+            </div>
+            
+            <p>You'll receive another email when your order ships.</p>
+            
+            <p>If you have any questions about your order, please contact our customer service.</p>
+            
+            <p>Best regards,<br>
+            The Chart Team</p>
+        </div>
+    </div>
+</body>
+</html> 

@@ -21,7 +21,6 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
     private final EmailMessageRepository emailMessageRepository;
-    private final EmailTemplateService templateService;
 
     @Override
     @Transactional

@@ -45,7 +45,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**",
                                 "/oauth2/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-                                "/api/products/**").permitAll()
+                                "/api/products/**", "/api/email/test/**", "/api/email/template/**",
+                                "/email-test.html", "/email/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/users/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -83,7 +84,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://goblin-well-promptly.ngrok-free.app")); // No trailing slash
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://goblin-well-promptly.ngrok-free.app", "https://crochet-shop.vercel.app")); // No trailing slash
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // Allow all headers for simplicity
         configuration.setExposedHeaders(List.of("Authorization")); // If needed
